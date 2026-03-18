@@ -20,7 +20,6 @@ package springfox.documentation.spring.web.plugins;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
-import io.github.classgraph.utils.ReflectionUtils;
 import org.springframework.core.ResolvableType;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.SpelNode;
@@ -34,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriTemplate;
 import springfox.documentation.service.ResolvedMethodParameter;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -68,8 +68,8 @@ public class SpringIntegrationParametersProvider {
 
   private List<ResolvedMethodParameter> addRequestBodyParam(BaseHttpInboundEndpoint inboundEndpoint) {
     List<ResolvedMethodParameter> parameters = new ArrayList<>();
-    ResolvableType requestPayloadType = (ResolvableType) ReflectionUtils.getFieldVal(inboundEndpoint,
-        "requestPayloadType", true);
+    ResolvableType requestPayloadType = (ResolvableType) getFieldValue(inboundEndpoint,
+        "requestPayloadType");
     if (requestPayloadType != null) {
       ResolvedType parameterType = typeResolver.resolve(requestPayloadType.getType());
       Map<String, Object> requestBodyAttributes = new HashMap<>();
@@ -98,15 +98,15 @@ public class SpringIntegrationParametersProvider {
   private List<ResolvedMethodParameter> addRequestParamParams(BaseHttpInboundEndpoint inboundEndpoint) {
     List<ResolvedMethodParameter> parameters = new ArrayList<>();
 
-    Expression payloadExpression = (Expression) ReflectionUtils.getFieldVal(inboundEndpoint,
-        FIELD_PAYLOAD_EXPRESSION, true);
+    Expression payloadExpression = (Expression) getFieldValue(inboundEndpoint,
+        FIELD_PAYLOAD_EXPRESSION);
     if (payloadExpression != null) {
       extractRequestParam(payloadExpression, typeResolver).ifPresent(
           parameters::add);
     }
     @SuppressWarnings("unchecked")
-    Map<String, Expression> headerExpressions = (Map<String, Expression>) ReflectionUtils.getFieldVal(
-        inboundEndpoint, FIELD_HEADER_EXPRESSIONS, true);
+    Map<String, Expression> headerExpressions = (Map<String, Expression>) getFieldValue(
+        inboundEndpoint, FIELD_HEADER_EXPRESSIONS);
 
     if (headerExpressions != null) {
       for (Expression headerExpression : headerExpressions.values()) {
@@ -137,6 +137,26 @@ public class SpringIntegrationParametersProvider {
           singletonList(requestParamAnnotation), typeResolver.resolve(String.class));
     }
     return Optional.ofNullable(ret);
+  }
+
+  /**
+   * Retrieves a field value from the given object, walking up the class hierarchy if needed.
+   * Replaces the removed {@code io.github.classgraph.utils.ReflectionUtils.getFieldVal} method.
+   */
+  private static Object getFieldValue(Object obj, String fieldName) {
+    Class<?> clazz = obj.getClass();
+    while (clazz != null) {
+      try {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(obj);
+      } catch (NoSuchFieldException e) {
+        clazz = clazz.getSuperclass();
+      } catch (IllegalAccessException e) {
+        throw new RuntimeException("Failed to access field: " + fieldName, e);
+      }
+    }
+    throw new RuntimeException("Field not found: " + fieldName + " in class hierarchy of " + obj.getClass().getName());
   }
 
 }

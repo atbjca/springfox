@@ -1,5 +1,3 @@
-group 'io.springfox'
-
 ext {
   limits = [
       'instruction': 100,

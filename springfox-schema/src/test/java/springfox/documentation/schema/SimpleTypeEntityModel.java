@@ -21,8 +21,10 @@ package springfox.documentation.schema;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.EntityModel;
 
+import java.util.Arrays;
+
 public class SimpleTypeEntityModel extends EntityModel<SimpleType> {
   public SimpleTypeEntityModel(SimpleType content, Link... links) {
-    super(content, links);
+    super(content, Arrays.asList(links));
   }
 }

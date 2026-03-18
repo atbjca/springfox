@@ -23,6 +23,7 @@ import io.swagger.models.Contact;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import springfox.documentation.schema.Model;
 import springfox.documentation.schema.ModelProperty;
 import springfox.documentation.service.ApiListingReference;
@@ -37,7 +38,7 @@ import springfox.documentation.swagger1.dto.ResourceListing;
 import springfox.documentation.swagger1.dto.ResponseMessage;
 
 
-@Mapper(uses = {
+@Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, uses = {
     AllowableValuesMapper.class,
     DataTypeMapper.class,
     AuthorizationTypesMapper.class

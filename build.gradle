@@ -1,21 +1,25 @@
 buildscript {
   repositories {
+    mavenLocal()
     maven {
       url "https://plugins.gradle.org/m2/"
+    }
+    mavenCentral()
+    if (project.hasProperty('nexusPublicUrl')) {
+      maven {
+        url nexusPublicUrl
+        credentials {
+          username nexusUsername
+          password nexusPassword
+        }
+      }
     }
     jcenter()
   }
 
   dependencies {
     classpath "com.github.adrianbk:gradle-jvmsrc-plugin:0.6.1"
-    classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.2"
-    classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
-    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
-    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.9.3"
-    classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.6.0"
-    classpath 'org.ajoberstar.grgit:grgit-core:3.0.0'
-    classpath 'org.ajoberstar:gradle-git-publish:2.0.0'
   }
 }
 
@@ -28,7 +32,11 @@ apply from: "$rootDir/gradle/ide.gradle"
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'build-dashboard'
 apply plugin: 'project-report'
-apply plugin: 'springfox-multi-release'
+// Disabled: springfox-multi-release depends on grgit (JCenter-exclusive), pending release plugin rewrite
+//apply plugin: 'springfox-multi-release'
+
+// Version read from .version file (replaces disabled springfox-multi-release plugin)
+version = file(".version").text.trim()
 
 ext {
   apiKey = System.getenv('GIT_HUB_API_KEY')
@@ -37,6 +45,27 @@ ext {
 
 allprojects {
   apply plugin: 'jacoco'
+}
+
+// Nexus publishing repository — auto-selects snapshot vs release based on version suffix
+allprojects {
+  plugins.withType(org.gradle.api.publish.maven.plugins.MavenPublishPlugin) {
+    publishing {
+      repositories {
+        if (project.hasProperty('nexusReleaseUrl')) {
+          maven {
+            url = project.provider {
+              project.version.toString().endsWith('-SNAPSHOT') ? nexusSnapshotUrl : nexusReleaseUrl
+            }
+            credentials {
+              username nexusUsername
+              password nexusPassword
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 subprojects {
@@ -62,6 +91,26 @@ subprojects {
     apply from: "$rootDir/gradle/publishing.gradle"
   }
   repositories {
+    mavenLocal()
+    if (project.hasProperty('nexusPublicUrl')) {
+      maven {
+        url nexusPublicUrl
+        credentials {
+          username nexusUsername
+          password nexusPassword
+        }
+      }
+    }
+    if (project.hasProperty('nexusSnapshotUrl') && project.version.toString().endsWith('-SNAPSHOT')) {
+      maven {
+        url nexusSnapshotUrl
+        credentials {
+          username nexusUsername
+          password nexusPassword
+        }
+      }
+    }
+    mavenCentral()
     jcenter()
   }
 
@@ -86,7 +135,7 @@ subprojects {
 
   sourceCompatibility = jdkVersion
   targetCompatibility = jdkVersion
-  group = 'io.springfox'
+  group = projectGroup
   version = project.rootProject.version
 
   task allDeps(type: DependencyReportTask) {}
@@ -107,11 +156,13 @@ subprojects {
   }
 }
 
-apply from: "$rootDir/gradle/documentation.gradle"
+// Disabled: docs build depends on asciidoctor + git-publish plugins (JCenter-exclusive)
+//apply from: "$rootDir/gradle/documentation.gradle"
 
-wrapper {
-  gradleVersion = '4.10.1'
-}
+// Disabled: wrapper version was incorrect (stated 4.10.1, actual is 5.2)
+//wrapper {
+//  gradleVersion = '4.10.1'
+//}
 
 task codeCoverageReport(type: JacocoReport) {
 

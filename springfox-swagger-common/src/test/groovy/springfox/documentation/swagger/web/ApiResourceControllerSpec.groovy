@@ -19,7 +19,7 @@
 package springfox.documentation.swagger.web
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
 import org.springframework.http.MediaType
@@ -167,7 +167,7 @@ class ApiResourceControllerSpec extends Specification {
     given:
     ObjectMapper mapper = new ObjectMapper()
     when:
-    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+    mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
 
     then:
     JSONAssert.assertEquals(

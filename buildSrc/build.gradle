@@ -17,6 +17,17 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 
 repositories {
+  mavenLocal()
+  if (project.hasProperty('nexusPublicUrl')) {
+    maven {
+      url nexusPublicUrl
+      credentials {
+        username nexusUsername
+        password nexusPassword
+      }
+    }
+  }
+  mavenCentral()
   jcenter()
 }
 

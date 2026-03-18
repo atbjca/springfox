@@ -21,7 +21,7 @@ package springfox.documentation.spring.web.mixins
 
 import com.fasterxml.classmate.TypeResolver
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import org.springframework.plugin.core.OrderAwarePluginRegistry
 import org.springframework.plugin.core.PluginRegistry
 import springfox.documentation.schema.CachingModelDependencyProvider
@@ -98,7 +98,7 @@ class ModelProviderForServiceSupport {
     EnumTypeDeterminer enumTypeDeterminer = new JacksonEnumTypeDeterminer()
     def objectMapper = new ObjectMapper()
     def typeNameExtractor = typeNameExtractor()
-    objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
+    objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
     def namingStrategy = new ObjectMapperBeanPropertyNamingStrategy()
 
     def event = new ObjectMapperConfigured(this, objectMapper)

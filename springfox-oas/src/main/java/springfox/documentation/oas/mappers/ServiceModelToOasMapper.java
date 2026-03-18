@@ -28,10 +28,11 @@ import io.swagger.oas.models.tags.Tag;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Documentation;
 
-@Mapper(uses = { VendorExtensionsMapper.class, LicenseMapper.class })
+@Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, uses = { VendorExtensionsMapper.class, LicenseMapper.class })
 public abstract class ServiceModelToOasMapper {
   @Mappings({
       @Mapping(target = "openapi", constant = "3.0.0"),

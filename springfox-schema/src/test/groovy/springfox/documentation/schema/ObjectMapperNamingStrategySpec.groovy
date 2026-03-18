@@ -20,7 +20,7 @@
 package springfox.documentation.schema
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import spock.lang.Specification
 import spock.lang.Unroll
 import springfox.documentation.schema.configuration.ObjectMapperConfigured
@@ -69,17 +69,17 @@ class ObjectMapperNamingStrategySpec extends Specification {
     where:
       beanAccessorMethod     |strategy                                | name
       "getSomeOddBallName"   |null                                    | "some_custom_odd_ball_name"
-      "getSomeOddBallName"   |PropertyNamingStrategy.SNAKE_CASE       | "some_custom_odd_ball_name"
-      "getSomeOddBallName"   |PropertyNamingStrategy.UPPER_CAMEL_CASE | "Some_custom_odd_ball_name"
-      "getSomeOddBallName"   |PropertyNamingStrategy.LOWER_CAMEL_CASE | "some_custom_odd_ball_name"
-      "getSomeOddBallName"   |PropertyNamingStrategy.LOWER_CASE       | "some_custom_odd_ball_name"
-      "getSomeOddBallName"   |PropertyNamingStrategy.KEBAB_CASE       | "some_custom_odd_ball_name"
+      "getSomeOddBallName"   |PropertyNamingStrategies.SNAKE_CASE       | "some_custom_odd_ball_name"
+      "getSomeOddBallName"   |PropertyNamingStrategies.UPPER_CAMEL_CASE | "Some_custom_odd_ball_name"
+      "getSomeOddBallName"   |PropertyNamingStrategies.LOWER_CAMEL_CASE | "some_custom_odd_ball_name"
+      "getSomeOddBallName"   |PropertyNamingStrategies.LOWER_CASE       | "some_custom_odd_ball_name"
+      "getSomeOddBallName"   |PropertyNamingStrategies.KEBAB_CASE       | "some_custom_odd_ball_name"
   }
 
   def "rename setting CamelCase strategy"() {
     given:
       ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+      objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE);
       ObjectMapperBeanPropertyNamingStrategy sut = new ObjectMapperBeanPropertyNamingStrategy()
       sut.onApplicationEvent(new ObjectMapperConfigured(this, objectMapper))
 

@@ -29,6 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Mapper
+@LicenseMapper.LicenseTranslator
 public class LicenseMapper {
 
   @License

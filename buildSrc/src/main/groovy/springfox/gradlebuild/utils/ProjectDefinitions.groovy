@@ -27,10 +27,10 @@ import org.gradle.api.Project
 class ProjectDefinitions {
   static publishables(Project project) {
     return project.subprojects.findAll {
-      !['swagger-contract-tests', 'swagger-contract-tests-webflux', 'buildSrc', 'springfox-spring-config'].contains(it.name)
+      !['swagger-contract-tests', 'swagger-contract-tests-webflux', 'buildSrc', 'springfox-spring-config', 'springfox-petstore', 'springfox-petstore-webflux'].contains(it.name)
     }
   }
   static publishable(Project project) {
-    !['swagger-contract-tests', 'swagger-contract-tests-webflux', 'buildSrc', 'springfox-spring-config'].contains(project.name)
+    !['swagger-contract-tests', 'swagger-contract-tests-webflux', 'buildSrc', 'springfox-spring-config', 'springfox-petstore', 'springfox-petstore-webflux'].contains(project.name)
   }
 }

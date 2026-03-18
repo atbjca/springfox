@@ -32,6 +32,7 @@ import io.swagger.models.properties.Property;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.service.ApiDescription;
 import springfox.documentation.service.ApiInfo;
@@ -57,7 +58,7 @@ import static java.util.stream.Collectors.*;
 import static springfox.documentation.builders.BuilderDefaults.*;
 import static springfox.documentation.swagger2.mappers.ModelMapper.*;
 
-@Mapper(uses = {
+@Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, uses = {
     ModelMapper.class,
     ParameterMapper.class,
     SecurityMapper.class,

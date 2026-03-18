@@ -75,7 +75,7 @@ class BeanModelPropertySpec extends SchemaSpecification {
     expect:
     sut.propertyDescription() == null
     !sut.required
-    sut.isReadOnly()
+    !sut.isReadOnly()
     typeNameExtractor.typeName(fromParent(modelContext, sut.getType())) == typeName
     sut.qualifiedTypeName() == qualifiedTypeName
     sut.allowableValues() == null

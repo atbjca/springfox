@@ -14,7 +14,7 @@ dependencies {
   compile libs.spring
   compileOnly libs.springProvidedWithSpringIntegration
   compile project(':springfox-spi')
-  compile project(':springfox-schema').sourceSets.main.output
+  compile project(':springfox-schema')
   compile project(':springfox-spring-web')
   compile project(':springfox-spring-webmvc')
   compile project(':springfox-spring-integration')
