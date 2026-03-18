@@ -25,11 +25,11 @@ buildscript {
 
 plugins {
   id "de.undercouch.download" version "3.4.3"
-  id "com.moowork.node" version "1.2.0"
+  id "com.moowork.node" version "1.3.1"
 }
 
 ext {
-  swaggerUiVersion = '3.23.11'
+  swaggerUiVersion = '5.32.1'
   swaggerUiDist = "build/libs/swagger-ui-dist.zip"
   swaggerUiExplodedDir = "swagger-ui-${swaggerUiVersion}/dist/"
   downloadUrl = "https://github.com/swagger-api/swagger-ui/archive/v${swaggerUiVersion}.zip"
@@ -44,13 +44,23 @@ dependencies {
 }
 
 node {
-  version = '8.12.0' // LTS
-  npmVersion = '6.4.1'
+  version = '18.20.4' // LTS Hydrogen (supports lockfileVersion 3)
+  npmVersion = '9.9.4'
   distBaseUrl = 'https://nodejs.org/dist'
   download = true
   workDir = file("${project.buildDir}/nodejs")
   npmWorkDir = file("${project.buildDir}/npm")
   nodeModulesDir = file("${project.projectDir}/src/web")
+}
+
+// Fix: nodejs.org returns 404 for ivy.xml, causing Gradle 5+ Ivy resolver to fail.
+// Tell Gradle to look directly for the artifact without requiring metadata files.
+repositories.whenObjectAdded {
+  if (it instanceof IvyArtifactRepository) {
+    metadataSources {
+      artifact()
+    }
+  }
 }
 
 task swaggerUiDownload {
@@ -93,7 +103,11 @@ task npmAudit(type: NpmTask) {
 task npmCi(type: NpmTask) {
   dependsOn npmSetup
   args = ["ci"]
-  outputs.dir("node_modules")
+  inputs.files(
+      file("${project.projectDir}/src/web/package.json"),
+      file("${project.projectDir}/src/web/package-lock.json")
+  )
+  outputs.dir(file("${project.projectDir}/src/web/node_modules"))
 }
 
 task customizeSwaggerUi {
