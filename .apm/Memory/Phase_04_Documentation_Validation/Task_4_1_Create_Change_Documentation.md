@@ -22,7 +22,7 @@ Created three comprehensive Markdown documents in the `doc/` directory covering 
 ### doc/CHANGES.md
 Documented all build system modifications across Phases 1 and 2:
 - Custom group property (`projectGroup=libiao.test.io.springfox`)
-- Local Gradle wrapper configuration (Gradle 5.2 from `/Volumes/LIBIAO_EX/dev/`)
+- Local Gradle wrapper configuration (Gradle 5.2 from `/Volumes/LIBIAO_HY/dev/`)
 - Nexus repository configuration across settings.gradle, build.gradle, buildSrc/build.gradle
 - Maven publishing with Nexus (replacing Bintray/Artifactory)
 - Version management via `.version` file (replacing disabled springfox-multi-release plugin)

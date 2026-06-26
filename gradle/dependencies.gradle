@@ -6,7 +6,7 @@ ext {
   equalsverifierVersion = '3.7.2'
   groovy = "2.5.23"
   jacocoVersion = '0.8.12'
-  jackson = '2.21.0'
+  jackson = '2.21.4'
   joda = "2.12.7"
   jsonPath = "2.9.0"
   jsonAssert = "1.5.1"

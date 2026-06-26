@@ -21,3 +21,6 @@ package-lock.json
 .eclipse/
 bin/
 .envrc
+.claude/
+.cursor/
+.codex

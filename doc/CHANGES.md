@@ -114,13 +114,13 @@ The Gradle wrapper was configured to use a local distribution file instead of do
 ### Configuration
 
 ```properties
-distributionUrl=file\:///Volumes/LIBIAO_EX/dev/gradle-5.2-bin.zip
+distributionUrl=file\:///Volumes/LIBIAO_HY/dev/gradle-5.2-bin.zip
 ```
 
 ### Notes
 
 - **Gradle version:** 5.2 (unchanged from original project)
-- The local path `/Volumes/LIBIAO_EX/dev/` is an external drive mount. If the drive is not mounted, Gradle commands will fail.
+- The local path `/Volumes/LIBIAO_HY/dev/` is an external drive mount. If the drive is not mounted, Gradle commands will fail.
 - Gradle 7.x/8.x are incompatible because the project uses the `compile` configuration which was removed in Gradle 7.
 - The zip was re-created from the Gradle wrapper cache and is functionally identical to the official distribution.
 
@@ -384,7 +384,7 @@ Edit this file to change the project version. Remove `-SNAPSHOT` for release bui
 ### `gradle/wrapper/gradle-wrapper.properties`
 
 ```properties
-distributionUrl=file\:///Volumes/LIBIAO_EX/dev/gradle-5.2-bin.zip
+distributionUrl=file\:///Volumes/LIBIAO_HY/dev/gradle-5.2-bin.zip
 ```
 
 ### Note on `allowInsecureProtocol`

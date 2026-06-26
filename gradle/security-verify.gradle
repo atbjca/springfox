@@ -1,0 +1,13 @@
+import springfox.gradlebuild.security.DependencyVersionChecker
+
+task verifyDependencySecurity {
+  group = 'verification'
+  description = 'Verify declared dependency versions meet the project security baseline'
+
+  doLast {
+    def checker = new DependencyVersionChecker(file("${rootDir}/gradle/dependencies.gradle"))
+    checker.verify()
+    logger.lifecycle('Dependency security baseline OK: ' +
+        checker.readDeclaredVersions().collect { k, v -> "${k}=${v}" }.join(', '))
+  }
+}

@@ -17,10 +17,10 @@
 ### Task 1.2 – Configure Local Gradle Wrapper - Agent_BuildConfig
 **Objective:** Point Gradle wrapper to local distribution file instead of internet URL.
 **Output:** Modified `gradle-wrapper.properties` with local file path.
-**Guidance:** Reference spring-framework pattern: `file:///Volumes/LIBIAO_EX/dev/gradle-<version>-bin.zip`. Current version is Gradle 5.2. Check local availability first.
+**Guidance:** Reference spring-framework pattern: `file:///Volumes/LIBIAO_HY/dev/gradle-<version>-bin.zip`. Current version is Gradle 5.2. Check local availability first.
 
-1. Check `/Volumes/LIBIAO_EX/dev/` for available `gradle-*-bin.zip` files to determine usable version
-2. Modify `gradle/wrapper/gradle-wrapper.properties`: change `distributionUrl` to `file\:///Volumes/LIBIAO_EX/dev/gradle-<version>-bin.zip`
+1. Check `/Volumes/LIBIAO_HY/dev/` for available `gradle-*-bin.zip` files to determine usable version
+2. Modify `gradle/wrapper/gradle-wrapper.properties`: change `distributionUrl` to `file\:///Volumes/LIBIAO_HY/dev/gradle-<version>-bin.zip`
 3. Verify `./gradlew --version` runs successfully with local distribution
 
 ### Task 1.3 – Configure Nexus Repository for Dependency Resolution - Agent_BuildConfig

@@ -1,7 +1,7 @@
 # Springfox Dependency Upgrade Report
 
 **Branch:** `2.10.5-bjca-patch`
-**Date:** 2026-03-18
+**Date:** 2026-06-25 (updated; initial upgrade 2026-03-18)
 **Java Requirement:** Java 8 (Java 11+ incompatible due to JAXB removal)
 **Spring Boot Baseline:** 2.7.18
 
@@ -14,11 +14,12 @@ This document details all dependency upgrades applied to the springfox project, 
 1. [Upgrade Summary](#upgrade-summary)
 2. [Core Dependency Upgrades](#core-dependency-upgrades)
 3. [Additional Upgrades (SnakeYAML 2.x + Jackson 2.21.0)](#additional-upgrades-snakeyaml-2x--jackson-2210)
-4. [API Compatibility Fixes](#api-compatibility-fixes)
-5. [Build Configuration Fix](#build-configuration-fix)
-6. [Modules Not Upgraded](#modules-not-upgraded)
-7. [Known Compatibility Notes](#known-compatibility-notes)
-8. [Constraints](#constraints)
+4. [Jackson 2.21.4 Security Patch](#jackson-2214-security-patch)
+5. [API Compatibility Fixes](#api-compatibility-fixes)
+6. [Build Configuration Fix](#build-configuration-fix)
+7. [Modules Not Upgraded](#modules-not-upgraded)
+8. [Known Compatibility Notes](#known-compatibility-notes)
+9. [Constraints](#constraints)
 
 ---
 
@@ -27,7 +28,7 @@ This document details all dependency upgrades applied to the springfox project, 
 - **Total dependencies upgraded:** 24+ version variables in `gradle/dependencies.gradle`
 - **API compatibility fixes:** 7 test files modified, 0 production source files changed
 - **Build fixes:** 6 `build.gradle` files corrected (`sourceSets.main.output` pattern)
-- **CVEs resolved:** 28 total (17 in initial upgrade, 2 in additional upgrade)
+- **CVEs resolved:** 34 total (25 in initial upgrade, 2 in additional upgrade, 7 in Jackson 2.21.4 patch)
 - **Test result:** All 12 testable core modules compile and pass tests on Java 8
 
 ---
@@ -131,6 +132,24 @@ These upgrades were performed separately (Task 3.4) to resolve two remaining hig
 | `springfox-spring-web/.../ModelProviderForServiceSupport.groovy` | `PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES` to `PropertyNamingStrategies.SNAKE_CASE` | Legacy alias removed in Jackson 2.20 |
 | `springfox-schema/.../ModelPropertyLookupSupport.groovy` | `introspectForBuilder(type)` to `introspect(type)` | Single-arg `introspectForBuilder(JavaType)` removed in Jackson 2.12+; original usage was incorrect (POJOs, not builders) |
 | `springfox-swagger1/.../BeanModelPropertySpec.groovy` | `sut.isReadOnly()` to `!sut.isReadOnly()` | Corrected assertion: `introspect()` properly discovers setters, making `hasSetter()` return true |
+
+---
+
+## Jackson 2.21.4 Security Patch
+
+This patch upgrade was performed via OpenSpec change `upgrade-jackson-2-21-4-security-patch` (June 2026) to resolve seven CVEs disclosed after the initial Jackson 2.21.0 upgrade.
+
+### Jackson 2.21.0 to 2.21.4
+
+| Attribute | Detail |
+|-----------|--------|
+| **Old Version** | 2.21.0 |
+| **New Version** | 2.21.4 (LTS patch release, May 2026) |
+| **CVEs Resolved** | CVE-2025-52999 (DoS stack overflow, CVSS 8.7), CVE-2026-54512, CVE-2026-54513, CVE-2026-54514 (SSRF), CVE-2026-54516 (@JsonIgnore bypass), CVE-2026-54517/54518 (@JsonView bypass) |
+| **Code Impact** | Zero. Patch release within 2.21.x LTS line; no source or test file changes required |
+| **Java Compatibility** | Jackson 2.21.4 supports Java 8 as baseline |
+
+**Note:** CVE-2025-52999 was fixed in jackson-core 2.21.1; upgrading directly to 2.21.4 also resolves five additional CVEs from the June 2026 advisory batch.
 
 ---
 
@@ -238,9 +257,9 @@ SnakeYAML 2.x defaults to `SafeConstructor`, which only parses safe types (strin
 
 ### Spring Boot 2.7.18 BOM Conflict
 
-Spring Boot 2.7.18's dependency management expects Jackson 2.13.x. The explicit Jackson 2.21.0 override in springfox's `gradle/dependencies.gradle` takes precedence at build time, but downstream applications using Spring Boot's BOM may see version conflicts. Downstream consumers should either:
+Spring Boot 2.7.18's dependency management expects Jackson 2.13.x. The explicit Jackson 2.21.4 override in springfox's `gradle/dependencies.gradle` takes precedence at build time, but downstream applications using Spring Boot's BOM may see version conflicts. Downstream consumers should either:
 
-1. Also override Jackson to 2.21.0 in their dependency management
+1. Also override Jackson to 2.21.4 in their dependency management
 2. Or at minimum align to Jackson 2.18.x+ to avoid classpath conflicts
 
 ### POJO Property Introspection Rewrite (Jackson 2.18)

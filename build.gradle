@@ -28,6 +28,7 @@ plugins {
 }
 
 apply from: "$rootDir/gradle/dependencies.gradle"
+apply from: "$rootDir/gradle/security-verify.gradle"
 apply from: "$rootDir/gradle/ide.gradle"
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'build-dashboard'
