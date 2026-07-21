@@ -1,10 +1,14 @@
 # Springfox Build System Changes
 
 **Branch:** `2.10.5-bjca-patch`
-**Version:** `2.10.5-bjca-patch-SNAPSHOT`
-**Date:** 2026-03-18
+**Version:** `2.10.5-bjca-patch`
+**Status:** RELEASE
+**Release Date:** 2026-06-30
+**Git Tag:** `v2.10.5-bjca-patch`
+**Nexus:** [Browse published RELEASE artifacts](http://192.168.131.36:8088/#browse/search=keyword%3Dspringfox%20AND%20version%3D2.10.5-bjca-patch)
+**Last Updated:** 2026-07-21
 
-This document describes all build system modifications made to the springfox project to support private repository publishing, custom artifact group, local Gradle wrapper, Makefile automation, and version management.
+This document describes all build system modifications made to the springfox project to support private repository publishing, custom artifact group, portable Gradle wrapper, Makefile automation, and version management.
 
 ---
 
@@ -12,7 +16,7 @@ This document describes all build system modifications made to the springfox pro
 
 1. [Quick Start](#quick-start)
 2. [Custom Group Property](#custom-group-property)
-3. [Local Gradle Wrapper](#local-gradle-wrapper)
+3. [Portable Gradle Wrapper](#portable-gradle-wrapper)
 4. [Nexus Repository for Dependency Resolution](#nexus-repository-for-dependency-resolution)
 5. [Maven Publishing with Nexus](#maven-publishing-with-nexus)
 6. [Version Management](#version-management)
@@ -97,40 +101,38 @@ All subprojects inherit this value automatically.
 After this change, artifacts are published as:
 
 ```
-libiao.test.io.springfox:springfox-core:2.10.5-bjca-patch-SNAPSHOT
-libiao.test.io.springfox:springfox-spi:2.10.5-bjca-patch-SNAPSHOT
-libiao.test.io.springfox:springfox-schema:2.10.5-bjca-patch-SNAPSHOT
+libiao.test.io.springfox:springfox-core:2.10.5-bjca-patch
+libiao.test.io.springfox:springfox-spi:2.10.5-bjca-patch
+libiao.test.io.springfox:springfox-schema:2.10.5-bjca-patch
 ... (all publishable modules)
 ```
 
+Published RELEASE artifacts can be located through the [Nexus repository search](http://192.168.131.36:8088/#browse/search=keyword%3Dspringfox%20AND%20version%3D2.10.5-bjca-patch).
+
 ---
 
-## Local Gradle Wrapper
+## Portable Gradle Wrapper
 
 **Files modified:** `gradle/wrapper/gradle-wrapper.properties`
 
-The Gradle wrapper was configured to use a local distribution file instead of downloading from the internet.
+The Gradle wrapper uses the official Gradle distribution service so it can bootstrap on developer machines and CI agents without relying on a workstation-specific filesystem path.
 
 ### Configuration
 
 ```properties
-distributionUrl=file\:///Volumes/LIBIAO_HY/dev/gradle-5.2-bin.zip
+distributionUrl=https\://services.gradle.org/distributions/gradle-5.2-bin.zip
 ```
 
 ### Notes
 
 - **Gradle version:** 5.2 (unchanged from original project)
-- The local path `/Volumes/LIBIAO_HY/dev/` is an external drive mount. If the drive is not mounted, Gradle commands will fail.
 - Gradle 7.x/8.x are incompatible because the project uses the `compile` configuration which was removed in Gradle 7.
-- The zip was re-created from the Gradle wrapper cache and is functionally identical to the official distribution.
+- Gradle Wrapper reuses a valid distribution from `GRADLE_USER_HOME/wrapper/dists` when the official URL is already cached.
+- Machines without an existing cache download the distribution from `services.gradle.org` on first use.
 
-### Reverting to Internet Download
+### Cache Behavior
 
-To revert to internet-based distribution:
-
-```properties
-distributionUrl=https\://services.gradle.org/distributions/gradle-5.2-bin.zip
-```
+Wrapper caches created for the former `file:///` URL use a different URL hash and are not selected by the official HTTPS URL. This does not affect dependency caches under `GRADLE_USER_HOME/caches`.
 
 ---
 
@@ -258,7 +260,7 @@ The following modules are excluded via `ProjectDefinitions.groovy`:
 The version is managed through a single `.version` file in the project root:
 
 ```
-2.10.5-bjca-patch-SNAPSHOT
+2.10.5-bjca-patch
 ```
 
 The root `build.gradle` reads this file directly:
@@ -376,7 +378,7 @@ nexusPassword=your-password
 ### `.version`
 
 ```
-2.10.5-bjca-patch-SNAPSHOT
+2.10.5-bjca-patch
 ```
 
 Edit this file to change the project version. Remove `-SNAPSHOT` for release builds.
@@ -384,7 +386,7 @@ Edit this file to change the project version. Remove `-SNAPSHOT` for release bui
 ### `gradle/wrapper/gradle-wrapper.properties`
 
 ```properties
-distributionUrl=file\:///Volumes/LIBIAO_HY/dev/gradle-5.2-bin.zip
+distributionUrl=https\://services.gradle.org/distributions/gradle-5.2-bin.zip
 ```
 
 ### Note on `allowInsecureProtocol`
